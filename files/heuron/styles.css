@@ -1,11 +1,11 @@
 ﻿body {
   margin:0px;
   background-image:none;
-  position:relative;
-  left:-0px;
+  position:static;
+  left:auto;
   width:428px;
-  margin-left:auto;
-  margin-right:auto;
+  margin-left:0;
+  margin-right:0;
   text-align:left;
 }
 .form_sketch {
@@ -281,4 +281,376 @@
   word-wrap:break-word;
   text-transform:none;
   visibility:hidden;
+}
+body.a {  background-color:rgba(255, 255, 255, 1);
+  background-image:none;
+  position:static;
+  left:auto;
+  width:375px;
+  margin-left:0;
+  margin-right:0;
+  text-align:left;
+}
+#u0.a {
+}
+#u0_img.a {
+}
+#u0.a {
+}
+#u0_text.a {
+}
+#u0 .text.a {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u1.a {
+}
+#u1_img.a {
+}
+#u1.a {
+}
+#u1_text.a {
+}
+#u1 .text.a {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u2.a {
+}
+#u2_img.a {
+}
+#u2.a {
+}
+#u2_text.a {
+}
+#u2 .text.a {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u3.a {
+}
+#u3_img.a {
+}
+#u3.a {
+}
+#u3_text.a {
+}
+#u3 .text.a {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u4.a {
+  position:fixed;
+  right:10px;
+  bottom:10px;
+}
+#u5.a {
+}
+#u5_img.a {
+}
+#u5.a {
+}
+#u5_text.a {
+}
+#u5 .text.a {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u4_state0.a {
+  position:relative;
+  left:0px;
+  top:0px;
+  width:69px;
+  height:69px;
+  background-color:rgba(255, 255, 255, 0);
+  background-image:none;
+  border:none;
+  border-radius:0px;
+  -moz-box-shadow:none;
+  -webkit-box-shadow:none;
+  box-shadow:none;
+}
+#u6.a {
+}
+#u6_img.a {
+}
+#u6.a {
+}
+#u6_text.a {
+}
+#u6 .text.a {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u7.a {
+}
+#u7_img.a {
+}
+#u7.a {
+}
+#u7_text.a {
+}
+#u7 .text.a {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u8.a {
+}
+#u8_img.a {
+}
+#u8.a {
+}
+#u8_text.a {
+}
+#u8 .text.a {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+body.b {  background-color:rgba(255, 255, 255, 1);
+  background-image:none;
+  position:static;
+  left:auto;
+  width:412px;
+  margin-left:0;
+  margin-right:0;
+  text-align:left;
+}
+#u0.b {
+}
+#u0_img.b {
+}
+#u0.b {
+}
+#u0_text.b {
+}
+#u0 .text.b {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u1.b {
+}
+#u1_img.b {
+}
+#u1.b {
+}
+#u1_text.b {
+}
+#u1 .text.b {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u2.b {
+}
+#u2_img.b {
+}
+#u2.b {
+}
+#u2_text.b {
+}
+#u2 .text.b {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u3.b {
+}
+#u3_img.b {
+}
+#u3.b {
+}
+#u3_text.b {
+}
+#u3 .text.b {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u4.b {
+  position:fixed;
+  right:10px;
+  bottom:10px;
+}
+#u5.b {
+}
+#u5_img.b {
+}
+#u5.b {
+}
+#u5_text.b {
+}
+#u5 .text.b {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u4_state0.b {
+  position:relative;
+  left:0px;
+  top:0px;
+  width:69px;
+  height:69px;
+  background-color:rgba(255, 255, 255, 0);
+  background-image:none;
+  border:none;
+  border-radius:0px;
+  -moz-box-shadow:none;
+  -webkit-box-shadow:none;
+  box-shadow:none;
+}
+#u6.b {
+}
+#u6_img.b {
+}
+#u6.b {
+}
+#u6_text.b {
+}
+#u6 .text.b {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u7.b {
+}
+#u7_img.b {
+}
+#u7.b {
+}
+#u7_text.b {
+}
+#u7 .text.b {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u8.b {
+}
+#u8_img.b {
+}
+#u8.b {
+}
+#u8_text.b {
+}
+#u8 .text.b {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+body.c {  background-color:rgba(255, 255, 255, 1);
+  background-image:none;
+  position:static;
+  left:auto;
+  width:414px;
+  margin-left:0;
+  margin-right:0;
+  text-align:left;
+}
+#u0.c {
+}
+#u0_img.c {
+}
+#u0.c {
+}
+#u0_text.c {
+}
+#u0 .text.c {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u1.c {
+}
+#u1_img.c {
+}
+#u1.c {
+}
+#u1_text.c {
+}
+#u1 .text.c {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u2.c {
+}
+#u2_img.c {
+}
+#u2.c {
+}
+#u2_text.c {
+}
+#u2 .text.c {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u3.c {
+}
+#u3_img.c {
+}
+#u3.c {
+}
+#u3_text.c {
+}
+#u3 .text.c {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u4.c {
+  position:fixed;
+  right:10px;
+  bottom:10px;
+}
+#u5.c {
+}
+#u5_img.c {
+}
+#u5.c {
+}
+#u5_text.c {
+}
+#u5 .text.c {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u4_state0.c {
+  position:relative;
+  left:0px;
+  top:0px;
+  width:69px;
+  height:69px;
+  background-color:rgba(255, 255, 255, 0);
+  background-image:none;
+  border:none;
+  border-radius:0px;
+  -moz-box-shadow:none;
+  -webkit-box-shadow:none;
+  box-shadow:none;
+}
+#u6.c {
+}
+#u6_img.c {
+}
+#u6.c {
+}
+#u6_text.c {
+}
+#u6 .text.c {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u7.c {
+}
+#u7_img.c {
+}
+#u7.c {
+}
+#u7_text.c {
+}
+#u7 .text.c {
+  align-self:center;
+  padding:2px 2px 2px 2px;
+}
+#u8.c {
+}
+#u8_img.c {
+}
+#u8.c {
+}
+#u8_text.c {
+}
+#u8 .text.c {
+  align-self:center;
+  padding:2px 2px 2px 2px;
 }
