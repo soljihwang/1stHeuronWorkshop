@@ -41,16 +41,20 @@
 <img class="img" src="./img/01.jpg">
 
 <div class="button_group">
-   <a href="#theme"><img class="button" src="./img/bt01.png"></a>
-   <a href="#schedule"><img class="button" src="./img/bt02.png" onclick=""></a>
-   <a href="#thanks"><img class="button" src="./img/bt03.png" onclick=""></a>
+   <img class="button" src="./img/bt01.png" onclick="move('theme')">
+   <img class="button" src="./img/bt02.png" onclick="move('schedule')">
+   <img class="button" src="./img/bt03.png" onclick="move('thanks')">
 </div>
 
 <img id="theme" class="img" src="./img/02.jpg">
 <img id="schedule" class="img" src="./img/03.jpg">
 <img id="thanks" class="img" src="./img/04.jpg">
 
-
-<img class="top" src="./img/top01.png" onclick="window.scrollTo(0, 0)">
+<img class="top" src="./img/top01.png" onclick="window.scrollTo({ top:0, behavior: 'smooth' })">
 </body>
+<script>
+   function move(id) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+   }
+</script>
 </html>
