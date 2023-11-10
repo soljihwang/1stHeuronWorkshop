@@ -1,23 +1,51 @@
 <html>
 <head>
-<title>1stHeuronWorkshop</title>
+   <title>1stHeuronWorkshop</title>
+
+   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+
 </head>
 <style>
-   img { width: 100%; }
+
+   .img {
+      width: 100%;
+   }
+
+   .button {
+      height: 9vw;
+   }
+
+   .button_group {
+      position: absolute;
+      top: 44vw;
+      width: 100%;
+      text-align: center;
+   }
+
+   .top {
+      position:fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 80px;
+      height: 80px;
+   }
+
 </style>
 <body>
-<div>
-   <img src="/1stHeuronWorkshop/img/img01.png" style="">
-   <div style="position: absolute; top:70%' center>
-      <img src="/1stHeuronWorkshop/img/button01.png" style="">
-      <img src="/1stHeuronWorkshop/img/button02.png" style="">
-      <img src="/1stHeuronWorkshop/img/button03.png" style="">
-   </div>
-</div>
-<img src="/1stHeuronWorkshop/img/img02.png" style="">
-<img src="/1stHeuronWorkshop/img/img03.png" style="">
-<img src="/1stHeuronWorkshop/img/img04.png" style="">
 
-<img src="/1stHeuronWorkshop/img/top01.png" style="position:fixed; bottom: 10px; right: 10px;">
+<img class="img" src="./img/01.jpg">
+
+<div class="button_group">
+   <a href="#theme"><img class="button" src="./img/bt01.png"></a>
+   <a href="#schedule"><img class="button" src="./img/bt02.png" onclick=""></a>
+   <a href="#thanks"><img class="button" src="./img/bt03.png" onclick=""></a>
+</div>
+
+<img id="theme" class="img" src="./img/02.jpg">
+<img id="schedule" class="img" src="./img/03.jpg">
+<img id="thanks" class="img" src="./img/04.jpg">
+
+
+<img class="top" src="./img/top01.png" onclick="window.scrollTo(0, 0)">
 </body>
 </html>
