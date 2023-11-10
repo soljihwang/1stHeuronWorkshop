@@ -10,8 +10,6 @@
   line-height:normal;
   text-transform:none;
 }
-.image {
-}
 .heading_1 {
   font-family:"Arial Normal", "Arial", sans-serif;
   font-weight:bold;
@@ -61,6 +59,6 @@
 }
 .form_disabled {
 }
-.line {
+.image {
 }
 textarea, select, input, button { outline: none; }
