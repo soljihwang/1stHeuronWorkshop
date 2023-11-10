@@ -8,6 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <link type="text/css" href="resources/css/reset.css" rel="Stylesheet" />
     <link type="text/css" href="resources/css/default.css" rel="Stylesheet" />
+    <link type="text/css" href="resources/css/loading.css" rel="Stylesheet" />
     <link rel='icon' type='image/svg+xml' href='resources/images/favicon_play.svg' />
     <link rel='alternate icon' href='resources/images/favicon_play.ico' />
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600' rel='stylesheet'>
@@ -17,6 +18,64 @@
             location.href = location.href.toString().replace('file://localhost/', 'file:///');
         }
     </script>
+	<script type="text/javascript">
+        window.isOnDemand = false;
+
+        var waitTimer = 300;
+        var isWaiting = false;
+
+        function main_frame_loaded(iframe) {
+            isWaiting = false;
+
+            if (!window.isOnDemand || is_local_source(document.location)) {
+                show_loading_indicator(false);
+                return;
+            }
+
+            var emptySource = iframe.contentWindow.location.href === 'about:blank';
+            show_loading_indicator(emptySource);
+			
+			iframe.contentWindow.onbeforeunload = content_start_loading;
+        };
+		
+        function content_start_loading() {
+            isWaiting = true;
+            var isLocalSource = is_local_source(document.location);
+            // Lets show loading indicator only for non-local team projects
+            var showLoading = !isLocalSource && window.isOnDemand;
+            show_loading_indicator(showLoading);
+        };
+
+        function is_local_source(location) {
+            // Local content loads fast. So, let's prevent loading indicator for local content.
+            const localHosts = ["127.0.0.1", "localhost", "local"];
+            const localFileProtocol = "file:";
+
+            if (localHosts.some((val) => val === location.hostname.toLowerCase())) return true;
+            if (location.protocol === localFileProtocol) return true;
+            return false
+        }
+
+        function show_loading_indicator(isVisible) {
+            var indicator = document.querySelector('.loading-indicator');
+            var panel = document.getElementById('mainPanel');
+
+            if (isVisible) {
+                // Do not show loading indicator immediately.
+                // Let's wait some time to prevent indicator blinking when content loads fast.
+                setTimeout(() => {
+                    if (isWaiting) {
+                        isWaiting = false;
+                        indicator.style.display = '';
+                        panel.style.display = 'none';
+                    }
+                }, waitTimer);
+            } else {
+                indicator.style.display = 'none';
+                panel.style.display = '';
+            }
+        }
+	</script>
     <!--<link type="text/css" rel="Stylesheet" href="plugins/sitemap/styles/sitemap.css" />
     <link type="text/css" rel="Stylesheet" href="plugins/page_notes/styles/page_notes.css" />
     <link type="text/css" rel="Stylesheet" href="plugins/debug/styles/debug.css" />
@@ -120,10 +179,16 @@
 
         <div id="mHideSidebar"></div>
         <div id="lsplitbar" class="splitbar"></div>
-        <div id="mainPanel">
+		<div class="loading-indicator" style="display: none;">
+			<svg class="loader" viewBox="0 0 24 24">
+				<circle class="loader__value" cx="12" cy="12" r="10" />
+				<circle class="loader__value" cx="12" cy="12" r="10" />
+			</svg>
+		</div>
+        <div id="mainPanel" style="display: none;">
             <div id="mainPanelContainer" style="position: relative; width:100%; height: 100%;">
                 <div id="clipFrameScroll" style="position: relative; width:100%; height: 100%; background-color: #ffffff;">
-                    <iframe id="mainFrame" name="mainFrame" width="100%" height="100%" src="about:blank" frameborder="0" style="display: block;position:absolute;" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                    <iframe onload="main_frame_loaded(this)" id="mainFrame" name="mainFrame" width="100%" height="100%" src="about:blank" frameborder="0" style="display: block;position:absolute;" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
                 </div>
             </div>
         </div>
@@ -141,7 +206,7 @@
 
     <div id="mobileControlFrameContainer"></div>
 
-<!-- 10.0.0.3905 -->
+<!-- 10.0.0.3886 -->
 <script src="resources/scripts/jquery-3.2.1.min.js"></script>
 <script src="resources/scripts/axure/jquery.nicescroll.min.js"></script>
 <script src="resources/scripts/axutils.js"></script>
@@ -150,5 +215,8 @@
 <script src="resources/scripts/player/init.js"></script>
 
 
+<script>
+	$(document).ready(content_start_loading);
+</script>
 </body>
 </html>

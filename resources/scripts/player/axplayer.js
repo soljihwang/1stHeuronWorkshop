@@ -15,10 +15,6 @@ var toolBarOnly = true;
 
 // isolate scope
 (function () {
-    // replace hash to query 
-    if (window.location.hash) {
-        replaceHashToQuery();
-    }
 
     if (!window.$axure) window.$axure = function () { };
     if (typeof console == 'undefined') console = {
@@ -29,7 +25,7 @@ var toolBarOnly = true;
     setUpController();
 
     var getHashStringVar = $axure.player.getHashStringVar = function (query) {
-        var qstring = self.location.href.split("?");
+        var qstring = self.location.href.split("#");
         if (qstring.length < 2) return "";
         return GetParameter(qstring, query);
     }
@@ -120,28 +116,6 @@ var toolBarOnly = true;
     $(window).on('hashchange', function() {
         window.location.reload();
     });
-
-    function replaceHashToQuery() {
-        var urlObj = new URL(window.location.href);
-
-        // add parameters from hash to query
-        const vars = urlObj.hash.substring(1).split("&");
-        for (let i = 0; i < vars.length; i++) {
-            const pair = vars[i].split("=");
-            urlObj.searchParams.set(pair[0], pair[1]);
-        }
-
-        // remove hash from url
-        urlObj.hash = "";
-
-        if (typeof window.history.replaceState != 'undefined') {
-            try {
-                window.history.replaceState("", "", urlObj.href);
-            } catch (ex) { }
-        } else {
-            window.location.replace(urlObj.href);
-        }
-    }
     
     function appendOutOfDateNotification() {
         var toAppend = '';
@@ -296,7 +270,7 @@ var toolBarOnly = true;
     function initializeMainFrame() {
         var legacyQString = getQueryString("Page");
         if (legacyQString.length > 0) {
-            location.href = location.href.substring(0, location.href.indexOf("?")) + "?" + PAGE_URL_NAME + "=" + legacyQString;
+            location.href = location.href.substring(0, location.href.indexOf("?")) + "#" + PAGE_URL_NAME + "=" + legacyQString;
             return;
         }
 
@@ -2770,18 +2744,18 @@ var toolBarOnly = true;
     }
 
     function loadVariablesFromUrl(removeVarFromUrl) {
-        let originalQueryValues = window.location.href.substr(window.location.href.indexOf('?')) || '';
+        let originalHashValues = window.location.href.substr(window.location.href.indexOf('#')) || '';
         let variables = {};
-        const query = (originalQueryValues.split(GLOBAL_VAR_NAME)[1] || '');
-
-        if (query.length > 0) {
-            $axure.utils.parseGlobalVars(query, function (varName, varValue) {
+        const query = (originalHashValues.split(GLOBAL_VAR_NAME)[1] || '');
+        
+        if(query.length > 0) {
+            $axure.utils.parseGlobalVars(query, function(varName, varValue) {
                 variables[varName] = varValue;
             });
-
-            if (removeVarFromUrl) {
-                originalQueryValues = originalQueryValues.replace(GLOBAL_VAR_NAME, "").replace(query, "");
-                replaceHash(originalQueryValues);
+            
+            if(removeVarFromUrl) {
+                originalHashValues = originalHashValues.replace(GLOBAL_VAR_NAME, "").replace(query, "");
+                replaceHash(originalHashValues);
             }
         }
 
@@ -2857,8 +2831,8 @@ var toolBarOnly = true;
         }
     }
 
-    function replaceHash(newQuery) {
-        var currentLocWithoutQuery = window.location.toString().split('?')[0];
+    function replaceHash(newHash) {
+        var currentLocWithoutHash = window.location.toString().split('#')[0];
 
         //We use replace so that every hash change doesn't get appended to the history stack.
         //We use replaceState in browsers that support it, else replace the location
@@ -2867,10 +2841,10 @@ var toolBarOnly = true;
                 //Chrome 45 (Version 45.0.2454.85 m) started throwing an error here when generated locally (this only happens with sitemap open) which broke all interactions.
                 //try catch breaks the url adjusting nicely when the sitemap is open, but all interactions and forward and back buttons work.
                 //Uncaught SecurityError: Failed to execute 'replaceState' on 'History': A history state object with URL 'file:///C:/Users/Ian/Documents/Axure/HTML/Untitled/start.html#p=home' cannot be created in a document with origin 'null'.
-                window.history.replaceState(null, null, currentLocWithoutQuery + newQuery);
+                window.history.replaceState(null, null, currentLocWithoutHash + newHash);
             } catch (ex) { }
         } else {
-            window.location.replace(currentLocWithoutQuery + newQuery);
+            window.location.replace(currentLocWithoutHash + newHash);
         }
     }
 
@@ -2957,43 +2931,43 @@ var toolBarOnly = true;
         return querystr;
     }
     
-    $axure.player.setVarInCurrentUrlHash = function (varName, varVal) {
-        var newQuery = $axure.utils.setHashStringVar(window.location.search, varName, varVal);
+    $axure.player.setVarInCurrentUrlHash = function(varName, varVal) {
+        var newHash = $axure.utils.setHashStringVar(window.location.hash, varName, varVal);
 
-        if (newQuery != null) {
-            replaceHash(newQuery);
+        if (newHash != null) {
+            replaceHash(newHash);
         }
     }
 
-    function deleteHashStringVar(currentQuery, varName) {
+    function deleteHashStringVar(currentHash, varName) {
         var varWithEqual = varName + '=';
 
-        var pageIndex = currentQuery.indexOf('?' + varWithEqual);
-        if (pageIndex == -1) pageIndex = currentQuery.indexOf('&' + varWithEqual);
+        var pageIndex = currentHash.indexOf('#' + varWithEqual);
+        if (pageIndex == -1) pageIndex = currentHash.indexOf('&' + varWithEqual);
         if (pageIndex != -1) {
-            var newQuery = currentQuery.substring(0, pageIndex);
+            var newHash = currentHash.substring(0, pageIndex);
 
-            var ampIndex = currentQuery.indexOf('&', pageIndex + 1);
+            var ampIndex = currentHash.indexOf('&', pageIndex + 1);
 
             //IF begin of string....if none blank, ELSE # instead of & and rest
             //IF in string....prefix + if none blank, ELSE &-rest
-            if (newQuery == '') { //beginning of string
-                newQuery = ampIndex != -1 ? '?' + currentQuery.substring(ampIndex + 1) : '';
+            if (newHash == '') { //beginning of string
+                newHash = ampIndex != -1 ? '#' + currentHash.substring(ampIndex + 1) : '';
             } else { //somewhere in the middle
-                newQuery = newQuery + (ampIndex != -1 ? currentQuery.substring(ampIndex) : '');
+                newHash = newHash + (ampIndex != -1 ? currentHash.substring(ampIndex) : '');
             }
 
-            return newQuery;
+            return newHash;
         }
 
         return null;
     }
 
-    $axure.player.deleteVarFromCurrentUrlHash = function (varName) {
-        var newQuery = deleteHashStringVar(window.location.search, varName);
+    $axure.player.deleteVarFromCurrentUrlHash = function(varName) {
+        var newHash = deleteHashStringVar(window.location.hash, varName);
 
-        if (newQuery != null) {
-            replaceHash(newQuery);
+        if (newHash != null) {
+            replaceHash(newHash);
         }
     };
 
@@ -3028,7 +3002,7 @@ var toolBarOnly = true;
                     toAdd += globalVarName + '=' + encodeURIComponent(val);
                 }
             }
-            return toAdd.length > 0 ? baseUrl + '?' + toAdd + "&CSUM=1" : baseUrl;
+            return toAdd.length > 0 ? baseUrl + '#' + toAdd + "&CSUM=1" : baseUrl;
         };
         $axure.getLinkUrlWithVars = _getLinkUrl;
 
@@ -3067,18 +3041,18 @@ var toolBarOnly = true;
                 return;
             }
             var urlWithVars = $axure.getLinkUrlWithVars(urlToLoad);
-            mainFrame.contentWindow.location.href = urlWithVars;
+            var currentData = $axure.messageCenter.getState('page.data');
+            var currentUrl = currentData && currentData.location;
+            if (currentUrl && currentUrl.indexOf('#') != -1) currentUrl = currentUrl.substring(0, currentUrl.indexOf('#'))
 
-            if (window.$axure && window.$axure.messageCenter) {
-                var newPageId = getPageIdByUrl(url);
-                if (newPageId) {
-                    window.$axure.messageCenter.setState('page.data', {
-                        location: urlWithVars,
-                        shortId: newPageId,
-                        adaptiveViews: []
-                    });
-                }
-            }
+            // this is so we can make sure the current frame reloads if the variables have changed
+            // by default, if the location is the same but the hash code is different, the browser will not
+            // trigger a reload
+            mainFrame.contentWindow.location.href =
+                currentUrl && urlToLoad.toLowerCase() != currentUrl.toLowerCase()
+                    ? urlWithVars
+                    : 'resources/reload.html#' + encodeURI(urlWithVars);
+
         };
 
         var pluginIds = [];

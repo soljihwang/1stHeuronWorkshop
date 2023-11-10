@@ -158,6 +158,12 @@ ul.sitemapTree {
 	color: #AAA;
 }
 
+.sitemapPluginNameHeader {
+    margin: 10px 9px 6px 9px;
+    /*font-size: 14px;*/
+    /*color: #444444;*/
+}
+
 .sitemapHeader {
     padding-top: 7px;
 }
@@ -168,28 +174,9 @@ ul.sitemapTree {
 
 .sitemapToolbar {
     margin: 0px 3px 0px 5px;
-}
-
-.toolbarRow {
-    margin-bottom: 3px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-}
-
-#expandCollapseAll {
-    align-self: center;
-    width: 60px;
-    margin: 0 4px 0 8px;
-    font-size: 12px;
-    text-align: end;
-    user-select: none;
-    color: #718096;
-    cursor: pointer;
-}
-
-#expandCollapseAll:hover {
-    color: #1482C5;
 }
 
 .sitemapToolbarButton {

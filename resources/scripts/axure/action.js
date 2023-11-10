@@ -457,8 +457,8 @@
     
     var urlWithStartHtml = function(url) {
         var pageName = url.substring(0, url.lastIndexOf('.html'));
-        var pageQuery = $axure.utils.setHashStringVar(START_URL_NAME, PAGE_URL_NAME, pageName);
-        return START_URL_NAME + pageQuery;
+        var pageHash = $axure.utils.setHashStringVar(START_URL_NAME, PAGE_URL_NAME, pageName);
+        return START_URL_NAME + pageHash;
     }
     
     var urlWithCollapseSitemap = function(url) {
@@ -688,11 +688,7 @@
 
                 var isResize = action.parentEventType == 'onResize';
                 //if it's resizing, use the old rect for the threshold and clamp; otherwise, use the current rect
-                var clampRect = $ax('#' + srcId).offsetBoundingRect(true);
-                if(isResize) {
-                    var oldRect = $ax.visibility.getResizingRect(srcId);
-                    if(oldRect) clampRect = oldRect;
-                }
+                var clampRect = isResize ? $ax.visibility.getResizingRect(srcId) : $ax('#' + srcId).offsetBoundingRect(true);
 
                 $ax.dynamicPanelManager.compressMove(srcId, below, isResize, clampRect, moveInfo.options.easing, moveInfo.options.duration, below ? yDelta : xDelta, below ? xDelta : yDelta);
                 continue;

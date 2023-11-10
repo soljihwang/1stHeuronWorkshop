@@ -29,14 +29,6 @@
             $('#showNotesOption').find('.overflowOptionCheckbox').addClass('selected');
         }
 
-        function escapeXSS(htmlStr) {
-            return htmlStr.replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#39;");
-        }
-
         function populateNotes(pageForNotes) {
             var hasNotes = false;
             if ($axure.document.configuration.showPageNotes) {
@@ -46,7 +38,7 @@
                     //populate the page notes
                     var notes = pageOrMaster.notes;
                     if (notes && !$.isEmptyObject(notes)) {
-                        pageNoteUi += "<div class='notesPageNameHeader'>" + escapeXSS(pageOrMaster.pageName) + "</div>";
+                        pageNoteUi += "<div class='notesPageNameHeader'>" + pageOrMaster.pageName + "</div>";
 
                         var showNames = $axure.document.configuration.showPageNoteNames;
                         for(var noteName in notes) {

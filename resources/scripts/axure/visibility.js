@@ -39,13 +39,11 @@
 
     $ax.visibility.SetVisible = function (element, visible) {
         //not setting display to none to optimize measuring
-        if (visible) {
-            var jElement = $(element);
-            if(jElement.hasClass(HIDDEN_CLASS)) jElement.removeClass(HIDDEN_CLASS);
-            if(jElement.hasClass(UNPLACED_CLASS)) jElement.removeClass(UNPLACED_CLASS);
+        if(visible) {
+            if($(element).hasClass(HIDDEN_CLASS)) $(element).removeClass(HIDDEN_CLASS);
+            if($(element).hasClass(UNPLACED_CLASS)) $(element).removeClass(UNPLACED_CLASS);
             element.style.display = '';
             element.style.visibility = 'inherit';
-            if(jElement.hasClass(SELECTED_ClASS)) $ax.style.SetWidgetSelected(element.id, true);
         } else {
             element.style.display = 'none';
             element.style.visibility = 'hidden';
@@ -1354,6 +1352,5 @@
 
     var HIDDEN_CLASS = _visibility.HIDDEN_CLASS = 'ax_default_hidden';
     var UNPLACED_CLASS = _visibility.UNPLACED_CLASS = 'ax_default_unplaced';
-    var SELECTED_ClASS = 'selected';
 
 });

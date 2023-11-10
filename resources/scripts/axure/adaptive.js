@@ -430,7 +430,7 @@
         if (message == 'switchAdaptiveView') {
             if (!$axure.utils.isInPlayer()) return;
 
-            var href = decodeURI(window.location.href.split('?')[0]);
+            var href = decodeURI(window.location.href.split('#')[0]);
             var lastSlash = href.lastIndexOf('/');
             href = href.substring(lastSlash + 1);
             if(href != data.src) return;

@@ -495,9 +495,7 @@ $axure.internal(function($ax) {
             $ax.action.refreshEnd(repeaterId);
             return;
         }
-        var unprocessedBaseObjs = $jobj($ax.repeater.createElementId(repeaterId, start + 1));
-        if(!unprocessedBaseObjs.length) return;
-        var unprocessedBaseIds = unprocessedBaseObjs.html().match(/(id|for)="?u([0-9]+)/g);
+        var unprocessedBaseIds = $jobj($ax.repeater.createElementId(repeaterId, start + 1)).html().match(/(id|for)="?u([0-9]+)/g);
         var baseIds = [];
         if(unprocessedBaseIds) {
             for(var i = 0; i < unprocessedBaseIds.length; i++) {
@@ -532,14 +530,14 @@ $axure.internal(function($ax) {
     };
 
     var _getViewIdFromPageViewId = function (pageViewId, id, diagramObject) {
-        if (diagramObject.owner.type == 'Axure:Master' || diagramObject.owner.type == 'referenceDiagramObject') {
-            var parentRdoId = diagramObject.owner.type == 'referenceDiagramObject' && diagramObject.owner.scriptIds.length ? diagramObject.owner.scriptIds[0] : $ax('#' + id).getParents(true, ['rdo'])[0][0];
+        if (diagramObject.owner.type != 'Axure:Master') {
+            return pageViewId;
+        } else {
+            var parentRdoId = $ax('#' + id).getParents(true, ['rdo'])[0][0];
             var rdoState = $ax.style.generateState(parentRdoId);
             var rdoStyle = $ax.style.computeFullStyle(parentRdoId, rdoState, pageViewId);
             var viewOverride = rdoStyle.viewOverride;
             return viewOverride;
-        } else {
-            return pageViewId;
         }
     }
 
@@ -552,7 +550,7 @@ $axure.internal(function($ax) {
             if(viewProps.hasOwnProperty(prop)) return viewProps[prop];
         }
 
-        var base = repeaterObj.owner.type == 'Axure:Master' || repeaterObj.owner.type == 'referenceDiagramObject' ? map['19e82109f102476f933582835c373474'] : map[''];
+        var base = repeaterObj.owner.type != 'Axure:Master' ? map[''] : map['19e82109f102476f933582835c373474'];
         if(base.hasOwnProperty(prop)) return base[prop];
         return map['default'][prop];
     };
@@ -1257,7 +1255,7 @@ $axure.internal(function($ax) {
     _repeaterManager.getData = _getDataFromDataSet;
 
     _repeaterManager.hasData = function(id, propName) {
-        if(!id || !_getItemIdFromElementId(id)) return false;
+        if(!_getItemIdFromElementId(id)) return false;
         var repeaterId = $ax.getParentRepeaterFromScriptId(_getScriptIdFromElementId(id));
         return Boolean(repeaterToCurrentDataSet[repeaterId] && repeaterToCurrentDataSet[repeaterId].props.indexOf(propName) != -1);
     };
@@ -1996,21 +1994,16 @@ $axure.internal(function($ax) {
         var size = {width: childrenRect.right, height: childrenRect.bottom};
         
         // Skip if size hasn't changed
-        var computedStyle = getComputedStyle(stateQuery[0]);
-        var oldWidth = $ax.getNumFromPx(computedStyle.width);
-        var oldHeight = $ax.getNumFromPx(computedStyle.height);
-        var borderRight = $ax.getNumFromPx(computedStyle.borderRightWidth);
-        var borderTop = $ax.getNumFromPx(computedStyle.borderTopWidth);
-        var borderLeft = $ax.getNumFromPx(computedStyle.borderLeftWidth);
-        var borderBottom = $ax.getNumFromPx(computedStyle.borderBottomWidth);
-        if(oldWidth == size.width && oldHeight== size.height) return false;
+        var oldWidth = stateQuery.width();
+        var oldHeight = stateQuery.height();
+        if(oldWidth == size.width && oldHeight == size.height) return false;
 
         var isPercentWidth = $obj(panelId).percentWidth;
-        if(!isPercentWidth) stateQuery.width(size.width - borderRight - borderLeft);
+        if(!isPercentWidth) stateQuery.width(size.width);
 
-        var oldBoundingRect = $ax('#' + panelId).offsetBoundingRect(true, true);
+        var oldBoundingRect = $ax('#' + panelId).offsetBoundingRect(true);
         $ax.visibility.setResizingRect(panelId, oldBoundingRect);
-        stateQuery.height(size.height - borderTop - borderBottom);
+        stateQuery.height(size.height);
 
         //updatePercentWidth on all child panels
         $jobj(stateContentId).children('.ax_dynamic_panel').each(
@@ -2019,7 +2012,7 @@ $axure.internal(function($ax) {
 
         //do the following only if it is the current state
         if (stateId != $ax.visibility.GetPanelState(panelId)) {
-            $ax.visibility.clearMovedAndResizedIds(panelId);
+            $ax.visibility.clearResizingRects();
             return false;
         }
 
@@ -2031,7 +2024,7 @@ $axure.internal(function($ax) {
         _adjustFixed(panelId, oldWidth, oldHeight, size.width, size.height);
         
         $ax.event.raiseSyntheticEvent(panelId, 'onResize');
-        $ax.visibility.clearMovedAndResizedIds(panelId);
+        $ax.visibility.clearResizingRects();
         $ax.flyoutManager.updateFlyout(panelId);
 
         return true;
@@ -2301,10 +2294,13 @@ $axure.internal(function($ax) {
         var thresholdOffset = vert ? 'height' : 'width';
         var oldThresholdOffset = targetRect[thresholdOffset];
 
-        var threshold = vert ? targetRect.bottom : targetRect.right; 
+        var threshold = vert ? targetRect.top : targetRect.left;
+        //threshold += oldQuery[thresholdOffset]();
 
         var magnitude = isResize ? newQuery[thresholdOffset]() - oldThresholdOffset : 1;
         var magSign = Math.sign(magnitude);
+
+        if (magSign < 0) threshold = vert ? targetRect.bottom : targetRect.right; 
 
         if (isNaN(delta)) {
             delta = magnitude;

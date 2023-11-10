@@ -823,22 +823,21 @@
             var borderElement = document.getElementById(id + '_div');
             var textElement = document.getElementById(textId);
             if (!$.isEmptyObject(overridedStyle)) {
+                var newSize = _applyTextStyle(textId, overridedStyle);
                 var diagramObject = $ax.getObjectFromElementId(id);
-                var fullStyle = _computeFullStyle(id, event, $ax.adaptive.currentViewId, overridedStyle);
-                var padding = { top: 0, right: 0, bottom: 0, left: 0 };
-                if (fullStyle.paddingTop) padding.top = +fullStyle.paddingTop;
-                if (fullStyle.paddingBottom) padding.bottom = +fullStyle.paddingBottom;
-                if (fullStyle.paddingLeft) padding.left = +fullStyle.paddingLeft;
-                if (fullStyle.paddingRight) padding.right = +fullStyle.paddingRight;
-                var newSize = _applyTextStyle(textId, overridedStyle, padding);
                 if (borderElement && textElement && (diagramObject.autoFitHeight || diagramObject.autoFitWidth)) {
+                    const fullStyle = _computeFullStyle(id, event, $ax.adaptive.currentViewId, overridedStyle);
                     if (diagramObject.autoFitHeight) {
                         var height = newSize.height;
+                        if (fullStyle.paddingTop) height += +fullStyle.paddingTop;
+                        if (fullStyle.paddingBottom) height += +fullStyle.paddingBottom;
                         borderElement.style.height = height + 'px';
                         textElement.style.top = 0;
                     }
                     if (diagramObject.autoFitWidth) {
                         var width = newSize.width;
+                        if (fullStyle.paddingLeft) width += +fullStyle.paddingLeft;
+                        if (fullStyle.paddingRight) width += +fullStyle.paddingRight;
                         borderElement.style.width = width + 'px';
                         textElement.style.left = 0;
                     }
@@ -926,17 +925,15 @@
 
     var _getViewIdChain = $ax.style.getViewIdChain = function(currentViewId, id, diagramObject) {
         var viewIdChain;
-        if (diagramObject.owner.type == 'Axure:Master' || diagramObject.owner.type == 'referenceDiagramObject') {
+        if (diagramObject.owner.type != 'Axure:Master') {
+            viewIdChain = $ax.adaptive.getAdaptiveIdChain(currentViewId);
+        } else {
             //set viewIdChain to the chain from the parent RDO
-            var parentRdoId;
-            if (diagramObject.owner.type == 'referenceDiagramObject') parentRdoId = diagramObject.owner.scriptIds[0];
-            if (!parentRdoId) parentRdoId = $ax('#' + id).getParents(true, ['rdo'])[0][0];
+            var parentRdoId = $ax('#' + id).getParents(true, ['rdo'])[0][0];
             var rdoState = $ax.style.generateState(parentRdoId);
             var rdoStyle = $ax.style.computeFullStyle(parentRdoId, rdoState, currentViewId);
             var viewOverride = rdoStyle.viewOverride;
-            viewIdChain = $ax.adaptive.getMasterAdaptiveIdChain(diagramObject.owner.type == 'referenceDiagramObject' ? diagramObject.owner.masterId : diagramObject.owner.packageId, viewOverride);
-        } else {
-            viewIdChain = $ax.adaptive.getAdaptiveIdChain(currentViewId);
+            viewIdChain = $ax.adaptive.getMasterAdaptiveIdChain(diagramObject.owner.packageId, viewOverride);
         }
         return viewIdChain;
     }
@@ -1544,18 +1541,16 @@
     //                         { 'fontWeight' : 'bold',
     //                           'fontStyle' : 'italic' }
     //-------------------------------------------------------------------------
-    var _applyTextStyle = function (id, style, padding = {top:0, right: 0, bottom: 0, left: 0}) {
+    var _applyTextStyle = function(id, style) {
         return _transformTextWithVerticalAlignment(id, function() {
             var styleProperties = _getCssStyleProperties(style);
-            var container = $('#' + id);
-            var newSize = { width: container[0].offsetWidth, height: container[0].offsetHeight };
-            var hasLineHeight = !!container.css('line-height');
-            container.find('*').each(function(index, element) {
+            var newSize = { width: 0, height: 0 };
+            $('#' + id).find('*').each(function(index, element) {
                 _applyCssProps(element, styleProperties);
-                var width = element.offsetWidth + padding.left + padding.right;
-                var height = element.offsetHeight + padding.top + padding.bottom;
-                if(width > newSize.width) newSize.width = width;
-                if(!hasLineHeight && height > newSize.height) newSize.height = height;
+                var width = element.offsetWidth;
+                var height = element.offsetHeight;
+                if (width > newSize.width) newSize.width = width;
+                if (height > newSize.height) newSize.height = height;
             });
             return newSize;
         });

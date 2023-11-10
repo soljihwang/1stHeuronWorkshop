@@ -3,34 +3,30 @@
 
 
     var _initializePageFragment = function(pageFragment, objIdToObject) {
-        var objectArrayHelper = function(objects, parent, packageId, owner) {
+        var objectArrayHelper = function(objects, parent) {
             for(var i = 0; i < objects.length; i++) {
-                diagramObjectHelper(objects[i], parent, packageId, owner);
+                diagramObjectHelper(objects[i], parent);
             }
         };
 
-        var diagramObjectHelper = function(diagramObject, parent, packageId, owner) {
+        var diagramObjectHelper = function(diagramObject, parent) {
             $ax.initializeObject('diagramObject', diagramObject);
-
-            objIdToObject[packageId + '~' + diagramObject.id] = diagramObject;
+            objIdToObject[pageFragment.packageId + '~' + diagramObject.id] = diagramObject;
             diagramObject.parent = parent;
-            diagramObject.owner = owner;
+            diagramObject.owner = pageFragment;
             diagramObject.scriptIds = [];
             if(diagramObject.diagrams) { //dynamic panel
                 for(var i = 0; i < diagramObject.diagrams.length; i++) {
                     var diagram = diagramObject.diagrams[i];
-                    objectArrayHelper(diagram.objects, diagram, packageId, owner);
+                    objectArrayHelper(diagram.objects, diagram);
                 }
             } else if($ax.public.fn.IsLayer(diagramObject.type)) {
                 var layerObjs = diagramObject.objs;
-                objectArrayHelper(layerObjs, parent, packageId, owner);
-            } else if($ax.public.fn.IsReferenceDiagramObject(diagramObject.type) && diagramObject.objects) {
-                // if the rdo object has children, it means it's overridden
-                // use rdo as owner in this case
-                objectArrayHelper(diagramObject.objects, diagramObject, diagramObject.id, diagramObject);
-            } else if(diagramObject.objects) objectArrayHelper(diagramObject.objects, diagramObject, packageId, owner);
+                objectArrayHelper(layerObjs, parent);
+            }
+            if(diagramObject.objects) objectArrayHelper(diagramObject.objects, diagramObject);
         };
-        objectArrayHelper(pageFragment.diagram.objects, pageFragment.diagram, pageFragment.packageId, pageFragment);
+        objectArrayHelper(pageFragment.diagram.objects, pageFragment.diagram);
     };
 
     var _initalizeStylesheet = function(stylesheet) {
@@ -84,19 +80,15 @@
                 var path = _pathsToScriptIds[i].idPath;
                 var scriptId = _pathsToScriptIds[i].scriptId;
 
-                // first try to find overridden objects from the rdo, they have rdo id in the first part of its key
-                // otherwise use a common master object
                 var packageId = _pageData.page.packageId;
-                var parentRdoId;
                 if(path.length > 1) {
                     for(var j = 0; j < path.length - 1; j++) {
                         var rdoId = path[j];
                         var rdo = objIdToObject[packageId + '~' + rdoId];
                         packageId = rdo.masterId;
-                        parentRdoId = rdo.id;
                     }
                 }
-                var diagramObject = (parentRdoId && objIdToObject[parentRdoId + '~' + path[path.length - 1]]) || objIdToObject[packageId + '~' + path[path.length - 1]];
+                var diagramObject = objIdToObject[packageId + '~' + path[path.length - 1]];
                 diagramObject.scriptIds[diagramObject.scriptIds.length] = scriptId;
 
                 scriptIdToObject[scriptId] = diagramObject;
@@ -785,7 +777,7 @@
                 if (!_needsReload(targetLocation, to.url)) {
                     targetLocation.href = targetUrl || 'about:blank';
                 } else {
-                    targetLocation.href = $axure.utils.getReloadPath() + "?" + encodeURI(targetUrl);
+                    targetLocation.href = $axure.utils.getReloadPath() + "#" + encodeURI(targetUrl);
                 }
             }
         } else {
@@ -801,7 +793,7 @@
         var reload = false;
         try {
             var oldUrl = oldLocation.href;
-            var oldBaseUrl = oldUrl.split("?")[0];
+            var oldBaseUrl = oldUrl.split("#")[0];
             var lastslash = oldBaseUrl.lastIndexOf("/");
             if(lastslash > 0) {
                 oldBaseUrl = oldBaseUrl.substring(lastslash + 1, oldBaseUrl.length);
@@ -897,8 +889,8 @@
     */
     $ax.public.reload = $ax.reload = function(includeVariables) {
         var targetUrl = (includeVariables === false)
-            ? $axure.utils.getReloadPath() + "?" + encodeURI($ax.pageData.url)
-            : $axure.utils.getReloadPath() + "?" + encodeURI($ax.globalVariableProvider.getLinkUrl($ax.pageData.url));
+            ? $axure.utils.getReloadPath() + "#" + encodeURI($ax.pageData.url)
+            : $axure.utils.getReloadPath() + "#" + encodeURI($ax.globalVariableProvider.getLinkUrl($ax.pageData.url));
         window.location.href = targetUrl;
     };
 
